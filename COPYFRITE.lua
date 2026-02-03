@@ -1,4 +1,4 @@
--- // Rewrite by FRITE for mobile support
+-- // Rewrite by FRITE for mobile support FRITE IS GAy
 -- // Services
 local CoreGui = game:GetService('CoreGui')
 local TweenService = game:GetService('TweenService')
@@ -3122,8 +3122,7 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                     Parent = Section,
                     BackgroundColor3 = Theme.PrimaryElementColor,
                     Size = UDim2.new(1, 0, 0, 40),
-                    ClipsDescendants = false,
-                    ZIndex = 1
+                    ClipsDescendants = false
                 }, {
                     Utility:Create('UICorner', {
                         CornerRadius = UDim.new(0, 5),
@@ -3147,8 +3146,7 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                         TextColor3 = Theme.PrimaryTextColor,
                         TextSize = 16,
                         TextXAlignment = Enum.TextXAlignment.Left,
-                        TextTruncate = Enum.TextTruncate.AtEnd,
-                        ZIndex = 2
+                        TextTruncate = Enum.TextTruncate.AtEnd
                     }, {
                         Utility:Create('UIPadding', {
                             Name = Name..'DropdownTextPadding',
@@ -3167,8 +3165,7 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                         Image = 'rbxassetid://3926305904',
                         ImageColor3 = Theme.SecondaryTextColor,
                         ImageRectOffset = Vector2.new(964, 284),
-                        ImageRectSize = Vector2.new(36, 36),
-                        ZIndex = 2
+                        ImageRectSize = Vector2.new(36, 36)
                     }),
                     Utility:Create('TextLabel', {
                         Name = Name..'DropdownSelectedText',
@@ -3182,8 +3179,7 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                         TextColor3 = Theme.SecondaryTextColor,
                         TextSize = 14,
                         TextXAlignment = Enum.TextXAlignment.Right,
-                        TextTruncate = Enum.TextTruncate.AtEnd,
-                        ZIndex = 2
+                        TextTruncate = Enum.TextTruncate.AtEnd
                     }, {
                         Utility:Create('UICorner', {
                             CornerRadius = UDim.new(0, 5),
@@ -3205,7 +3201,7 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                         Text = '',
                         TextColor3 = Color3.fromRGB(0, 0, 0),
                         TextSize = 14,
-                        ZIndex = 3
+                        ZIndex = 2
                     }, {
                         Utility:Create('UICorner', {
                             CornerRadius = UDim.new(0, 5),
@@ -3214,28 +3210,25 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                     })
                 })
 
-                -- Dropdown-Liste als separates Frame DIREKT in der Tab (nicht in Section!)
-                -- Dadurch ist es über allen Section-Elementen
                 Utility:Create('Frame', {
                     Name = Name..'DropListContainer',
-                    Parent = Tab,  -- WICHTIG: Parent ist Tab, nicht Section!
+                    Parent = Section,
                     BackgroundTransparency = 1,
                     Position = UDim2.new(0, 0, 0, 0),
-                    Size = UDim2.new(1, 0, 1, 0),
+                    Size = UDim2.new(1, 0, 0, 0),
                     Visible = false,
-                    ZIndex = 1000,  -- SEHR hoher ZIndex
-                    ClipsDescendants = false
+                    ZIndex = 100
                 }, {
                     Utility:Create('ScrollingFrame', {
                         Name = Name..'DropList',
                         Active = true,
                         BackgroundColor3 = Theme.PrimaryElementColor,
                         BorderSizePixel = 0,
-                        Position = UDim2.new(0, 0, 0, 0),  -- Wird dynamisch gesetzt
-                        Size = UDim2.new(0, 0, 0, 0),
+                        Position = UDim2.new(0, 0, 0, 45),
+                        Size = UDim2.new(1, 0, 0, 0),
                         ScrollBarImageColor3 = Theme.ScrollBarColor,
                         ScrollBarThickness = 3,
-                        ZIndex = 1001,
+                        ZIndex = 101,
                         ClipsDescendants = true
                     }, {
                         Utility:Create('UIStroke', {
@@ -3257,13 +3250,22 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                     })
                 })
 
+                Utility:Create('Frame', {
+                    Name = Name..'DropdownFiller',
+                    Parent = Section,
+                    Visible = false,
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 0)
+                })
+
                 local DropdownHolder = Section[Name..'DropdownHolder']
-                local DropListContainer = Tab[Name..'DropListContainer']
+                local DropListContainer = Section[Name..'DropListContainer']
                 local DropList = DropListContainer[Name..'DropList']
                 local DropdownButton = DropdownHolder[Name..'DropdownButton']
                 local DropdownIcon = DropdownHolder[Name..'DropdownIcon']
                 local DropdownSelectedText = DropdownHolder[Name..'DropdownSelectedText']
                 local DropListLayout = DropList[Name..'DropListLayout']
+                local DropdownFiller = Section[Name..'DropdownFiller']
 
                 AssignElementOrder(DropdownHolder)
                 UpdateSectionSize()
@@ -3287,21 +3289,6 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                     return openHeight, contentY
                 end
 
-                local function UpdateDropdownPosition()
-                    -- Berechne die absolute Position des Dropdown-Holders relativ zum Tab
-                    local holderPos = DropdownHolder.AbsolutePosition
-                    local tabPos = Tab.AbsolutePosition
-                    local sectionPadding = Section[Name..'SectionPadding']
-                    
-                    -- Relative Position im Tab
-                    local relativeX = holderPos.X - tabPos.X
-                    local relativeY = holderPos.Y - tabPos.Y
-                    
-                    -- Setze die DropList-Position direkt unter dem Holder
-                    DropList.Position = UDim2.new(0, relativeX, 0, relativeY + 45)
-                    DropList.Size = UDim2.new(0, DropdownHolder.AbsoluteSize.X, 0, DropList.Size.Y.Offset)
-                end
-
                 local function ApplyDropdownSizing(UseTween)
                     local openHeight, contentY = GetDropdownOpenHeight()
                     if contentY > 0 then
@@ -3312,40 +3299,40 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                         return
                     end
 
-                    UpdateDropdownPosition()
-                    
-                    local listSize = {Size = UDim2.new(0, DropdownHolder.AbsoluteSize.X, 0, openHeight)}
-                    
+                    local sizeProps = {Size = UDim2.new(1, 0, 0, openHeight)}
                     if UseTween then
-                        Utility:Tween(DropList, listSize, 0.25)
+                        Utility:Tween(DropList, sizeProps, 0.25)
+                        Utility:Tween(DropdownFiller, {Size = UDim2.new(1, 0, 0, openHeight + 10)}, 0.25)
                     else
-                        DropList.Size = listSize.Size
+                        DropList.Size = sizeProps.Size
+                        DropdownFiller.Size = UDim2.new(1, 0, 0, openHeight + 10)
                     end
+                    
+                    task.defer(UpdateSectionSize)
                 end
 
                 local function CloseDropdown()
                     if not Opened then return end
                     
                     Opened = false
+                    DropdownHolder.ZIndex = 1
+                    DropListContainer.ZIndex = 1
+                    DropdownFiller.ZIndex = 1
                     
-                    Utility:Tween(DropList, {Size = UDim2.new(0, DropdownHolder.AbsoluteSize.X, 0, 0)}, 0.25)
+                    Utility:Tween(DropList, {Size = UDim2.new(1, 0, 0, 0)}, 0.25)
+                    Utility:Tween(DropdownFiller, {Size = UDim2.new(1, 0, 0, 0)}, 0.25)
                     Utility:Tween(DropdownIcon, {Rotation = 270}, 0.25)
                     
                     task.wait(0.25)
                     DropListContainer.Visible = false
+                    DropdownFiller.Visible = false
+                    UpdateSectionSize()
                 end
 
                 DropListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
                     task.defer(function()
                         ApplyDropdownSizing(false)
                     end)
-                end)
-
-                -- Update Position wenn gescrollt wird
-                Tab:GetPropertyChangedSignal('CanvasPosition'):Connect(function()
-                    if Opened then
-                        UpdateDropdownPosition()
-                    end
                 end)
 
                 if not ImprovePerformance then
@@ -3384,7 +3371,11 @@ function Library:CreateWindow(HubName, GameName, IntroText, IntroIcon, ImprovePe
                     Opened = not Opened
 
                     if Opened then
+                        DropdownHolder.ZIndex = 100
+                        DropListContainer.ZIndex = 100
+                        DropdownFiller.ZIndex = 99
                         DropListContainer.Visible = true
+                        DropdownFiller.Visible = true
                         Utility:Tween(DropdownIcon, {Rotation = 90}, 0.25)
 
                         task.defer(function()
